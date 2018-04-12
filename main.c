@@ -51,16 +51,15 @@ t_map		*lines_n_chars(int fd)
 	chrs = 0;
 	while (read(fd, &tmp, 1))
 	{
-		while (lines == 0 && tmp != '\n')
-		{
-			if (!SPACE(tmp))
-				chrs++;
-		}
+		if (tmp != '\n' && !SPACE(tmp))
+			chrs++;
 		if (tmp == '\n')
 			lines++;
-		if (!SPACE(tmp) && !ft_isdigit(tmp))
-			ft_putendl("ATTENTION: non-digit form in map!");
+		// if (!SPACE(tmp) && !ft_isdigit(tmp))
+		// 	ft_putendl("ATTENTION: non-digit form in map!");
+		printf("chrs = %d, lines = %d\n", chrs, lines);
 	}
+	close(fd);
 	map->width = chrs;
 	map->height = lines;
 	return(map);
@@ -68,25 +67,26 @@ t_map		*lines_n_chars(int fd)
 
 t_map	*validate(int fd, char *av)
 {
-	int			lines;
 	int			j;
 	char		*tmp;
 	t_map		*map;
 	t_points	**tmp_p;
+	int w = 5;
+	int h = 5;
 
 	j = 0;
 	if (!(map = (t_map*)malloc(sizeof(t_map))))
 		error("ERROR: malloc error");
 	map = lines_n_chars(fd);
-	if ((!(map->points = (t_points***)malloc(sizeof(t_points**) * map->height))) || 
+	if ((!(map->points = (t_points**)malloc(sizeof(t_points*) * map->height))) || 
 		(map->width == 0 || map->height == 0))
 		error("ERRROR!");
 	while((get_next_line(fd, &tmp)) > 0)
 	{
-		if (!(map->points[j] = (t_points**)malloc(map->height * sizeof(t_points*))))
+		if (!(map->points[j] = (t_points*)malloc(map->height * sizeof(t_points))))
 			error("ERROR: malloc error");
-		make_points(tmp, j, &tmp_p, map->width);
-		map->points[j] = tmp_p;
+		//make_points(tmp, j, &tmp_p, map->width);
+		//map->points[j] = tmp_p;
 		j++;
 	}
 	return(map);
@@ -97,17 +97,13 @@ int		main(int ac, char **av)
 	int		fd; 
 	t_mlx	*mlx;
 	t_map	*map;
-	FILE * pFile;
 
-	pFile = fopen("text.txt", "w");
-	fprintf(pFile, "Hello!");
 	if (ac == 2)
 	{
 		if (!(mlx = (t_mlx*)malloc(sizeof(t_mlx))))
 			error("ERROR: malloc error");
 		fd = open(av[1], O_RDONLY);
 		if (fd < 0)
-
 			error("ERROR: ivalid input file!");
 		map = validate(fd, av[1]);
 	}
