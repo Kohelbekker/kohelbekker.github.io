@@ -8,11 +8,6 @@ int		error(char *str)
 	return (0);
 }
 
-// int		choose_color()
-// {
-// 	return (0);
-// }
-
 int		make_points(char *tmp, int l, t_points ***points, int width)
 {
 	int			j;
@@ -26,7 +21,7 @@ int		make_points(char *tmp, int l, t_points ***points, int width)
 	if (!((*points) = (t_points**)malloc(sizeof(t_points) * j)))
 		error("ERROR: malloc error");
 	j = 0;
-	while (str[j] && j < width)
+	while (str[j])
 	{
 		array = (t_points*)malloc(sizeof(t_points));
 		array->x = j * 20;
@@ -39,54 +34,48 @@ int		make_points(char *tmp, int l, t_points ***points, int width)
 	return(0);
 }
 
-t_map		*lines_n_chars(int fd)
+int		lines_n_chars(int fd, t_map **map, int chrs, int lines, int f_line)
 {
-	int		chrs;
-	int		lines;
 	char	tmp;
-	t_map	*map;
 
-
-	lines = 0;
-	chrs = 0;
 	while (read(fd, &tmp, 1))
 	{
+		if (tmp == '\n')
+			chrs = (lines++, 0);
 		if (tmp != '\n' && !SPACE(tmp))
 			chrs++;
-		if (tmp == '\n')
-			lines++;
-		// if (!SPACE(tmp) && !ft_isdigit(tmp))
-		// 	ft_putendl("ATTENTION: non-digit form in map!");
-		printf("chrs = %d, lines = %d\n", chrs, lines);
+		if (lines == 0)
+			f_line = chrs;
+		if (lines != 0 && chrs > f_line)
+			error("Found wrong line length. Exiting.");
+		if (!SPACE(tmp) && !ft_isdigit(tmp))
+		 	ft_putendl("ATTENTION: non-digit form in map!");
 	}
-	close(fd);
-	map->width = chrs;
-	map->height = lines;
-	return(map);
+	(*map)->width = f_line;
+	(*map)->height = lines;
+	return(0);
 }
 
-t_map	*validate(int fd, char *av)
+t_map	*validate(int fd)
 {
 	int			j;
 	char		*tmp;
 	t_map		*map;
 	t_points	**tmp_p;
-	int w = 5;
-	int h = 5;
-
+	
 	j = 0;
 	if (!(map = (t_map*)malloc(sizeof(t_map))))
 		error("ERROR: malloc error");
-	map = lines_n_chars(fd);
+	lines_n_chars(fd, &map, 0, 0, 0);
 	if ((!(map->points = (t_points**)malloc(sizeof(t_points*) * map->height))) || 
 		(map->width == 0 || map->height == 0))
 		error("ERRROR!");
 	while((get_next_line(fd, &tmp)) > 0)
 	{
-		if (!(map->points[j] = (t_points*)malloc(map->height * sizeof(t_points))))
+		if (!(map->points[j] = (t_points*)malloc(map->width * sizeof(t_points))))
 			error("ERROR: malloc error");
-		//make_points(tmp, j, &tmp_p, map->width);
-		//map->points[j] = tmp_p;
+		make_points(tmp, j, &tmp_p, map->width);
+		map->points[j] = *tmp_p;
 		j++;
 	}
 	return(map);
@@ -105,7 +94,9 @@ int		main(int ac, char **av)
 		fd = open(av[1], O_RDONLY);
 		if (fd < 0)
 			error("ERROR: ivalid input file!");
-		map = validate(fd, av[1]);
+		map = validate(fd);
+		printf("w = %d\n", map->width);
+		printf("h = %d\n", map->height);
 	}
 	else
 		error("usage: ./fdf [map], could be one file for reading");
