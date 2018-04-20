@@ -20,12 +20,11 @@ int		first_line_width(char *tmp)
 	return (j);
 }
 
-t_points		*make_points(char *tmp, int l, t_map *map)
+int		make_points(char *tmp, int l, t_points ***points, t_map *map)
 {
 	int			j;
 	char		**str;
 	t_points	*array;
-	t_points	**points;
 
 	j = 0;
 	str = ft_strsplit(tmp, ' ');
@@ -33,7 +32,7 @@ t_points		*make_points(char *tmp, int l, t_map *map)
 		j++;
 	if (j < map->width)
 		error("Bad line length in map");
-	if (!(points = (t_points**)malloc(sizeof(t_points) * (j))))
+	if (!((*points) = (t_points**)malloc(sizeof(t_points) * (j))))
 		error("ERROR: malloc error");
 	j = 0;
 	while (str[j] &&  j < map->width)
@@ -43,11 +42,11 @@ t_points		*make_points(char *tmp, int l, t_map *map)
 		array->y = l * 30;
 		array->z = ft_atoi(str[j]);
 		array->color = ft_atoi(str[j]);
-		points[j] = array;
+		(*points)[j] = array;
 		j++;
 	}
-	printf("|||y0 = %f\n|||", (*points)[8].x);
-	return (*points);
+	printf("|||y0 = %f\n|||", (*points)[8]->);
+	return (0);
 }
 
 int		lines_nb(char *av, t_map **map, int lines)
@@ -74,6 +73,7 @@ t_map	*validate(char **av, int fd)
 	int			j;
 	char		*tmp;
 	t_map		*map;
+	t_points	**tmp_p;
 
 	j = 0;
 	if (!(map = (t_map*)malloc(sizeof(t_map))))
@@ -89,14 +89,15 @@ t_map	*validate(char **av, int fd)
 			error("ERROR: no first line");
 		if (!(map->points[j] = (t_points*)malloc(sizeof(t_points))))
 			error("ERROR: malloc error");
-		map->points[j] = make_points(tmp, j, map);
+		make_points(tmp, j, &tmp_p, map);
 		//printf("y  = %f\n", (*tmp_p)[8].x);
+		map->points[j] = *tmp_p;
 		//printf("y2 = %f\n", map->points[j][8].x);
 		j++;
 	}
 	map->height = j;
-	free(tmp);
 	return(map);
+	free(tmp);
 }
 
 int		main(int ac, char **av)
