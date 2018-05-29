@@ -1,14 +1,100 @@
 #include "fdf.h"
 #include <stdio.h>
 
-int		error(char *str)
+t_mlx		*mlx_make(char *av, t_map *map);
+
+int			error(char *str)
 {
 	ft_putendl(str);
 	exit(1);
 	return (0);
 }
 
-int		first_line_width(char *tmp)
+double		scale(t_map *m)
+{
+	double	i;
+	double	j;
+
+	j = ((m->width < m->height) ? m->height : m->width);
+	i = (W_HGHT - 400) / (j * DIST);
+	return (i);
+}
+
+t_points	scale_mat(t_points a, t_mlx *mlx)
+{
+	t_points	v;
+
+	v.x = a.x;
+	v.y = a.y;
+	v.z = a.z;
+	v.x *= mlx->map->scale;
+	v.y *= mlx->map->scale;
+	v.z *= mlx->map->scale;
+	return (v);
+}
+
+t_points	angle_mat(t_points a)
+{
+	t_points	v;
+	double		x;
+	double		y;
+	double		z;
+
+	x = a.x;
+	z = a.z;
+	y = a.y;
+	v.x = x;
+	v.y = cos(0.7854) * y - sin(0.7854) * z;
+	v.z = -sin(0.7854) * y + cos(0.7854) * z;
+	v.color = a.color;
+	return (v);
+}
+
+
+t_points	center(t_points a, t_mlx *mlx)
+{
+	a.x -= ((mlx->map->width - 1) / 2.0) * DIST;
+	a.y -= ((mlx->map->height - 1) / 2.0) * DIST;
+	a.z -= ((mlx->map->z_max + mlx->map->z_min) / 2.0f) * 30;
+	a = scale_mat(a, mlx); 
+	a.x += W_WID / 2;
+	a.y += W_HGHT / 2;
+	a = angle_mat(a);
+	return (a);               
+}
+
+
+t_map		*find_z(t_map *m)
+{
+	int			min_z;
+	int			max_z;
+	int			x;
+	int			y;
+	int			a;
+
+	y = 0;
+	max_z = -2147483648;
+	min_z = 2147483647;
+	while (y < m->height)
+	{
+		x = 0;
+		while (x < m->width)
+		{
+			a = m->points[y][x].z;
+			if (a < min_z)
+				min_z = a;
+			if (a > max_z)
+				max_z = a;
+			x++;
+		}
+		y++;
+	}
+	m->z_min = min_z;
+	m->z_max = max_z;
+	return(m);
+}
+
+int			first_line_width(char *tmp)
 {
 	int		j;
 	char	**str;
@@ -20,7 +106,7 @@ int		first_line_width(char *tmp)
 	return (j);
 }
 
-t_points		*make_points(char *tmp, int l, t_map *map)
+t_points	*make_points(char *tmp, int l, t_map *map)
 {
 	int			j;
 	char		**str;
@@ -39,14 +125,13 @@ t_points		*make_points(char *tmp, int l, t_map *map)
 	while (str[j] &&  j < map->width)
 	{
 		array = (t_points*)malloc(sizeof(t_points));
-		array->x = j * 30;
-		array->y = l * 30;
-		array->z = ft_atoi(str[j]);
+		array->x = (float)j * DIST;
+		array->y = (float)l * DIST;
+		array->z = (float)ft_atoi(str[j]);
 		array->color = ft_atoi(str[j]);
 		points[j] = array;
 		j++;
 	}
-	printf("|||y0 = %f\n|||", (*points)[8].x);
 	return (*points);
 }
 
@@ -56,12 +141,12 @@ int		lines_nb(char *av, t_map **map, int lines)
 	int fd = 0;
 	
 	if ((fd = open(av, O_RDONLY)) < 0)
-		error("ERROR: can not opet the file!");
+		error("ERROR: can not open the file!");
 	while (read(fd, &tmp, 1))
 	{
 		if (tmp == '\n')
 			lines++;
-		if (!SPACE(tmp) && !ft_isdigit(tmp))
+		if (!SPACE(tmp) && !ft_isdigit(tmp) && (tmp != '-')) 
 		 	ft_putendl("ATTENTION: non-digit form in map!");
 	}
 	close(fd);
@@ -84,18 +169,16 @@ t_map	*validate(char **av, int fd)
 		error("ERRROR!");
 	while((get_next_line(fd, &tmp)) > 0)
 	{
-		//printf("%s\n", tmp);
 		if (j == 0 && (map->width = first_line_width(tmp)) < 1)
 			error("ERROR: no first line");
 		if (!(map->points[j] = (t_points*)malloc(sizeof(t_points))))
 			error("ERROR: malloc error");
 		map->points[j] = make_points(tmp, j, map);
-		//printf("y  = %f\n", (*tmp_p)[8].x);
-		//printf("y2 = %f\n", map->points[j][8].x);
 		j++;
 	}
 	map->height = j;
-	free(tmp);
+	map->scale = scale(map);
+	map = find_z(map);
 	return(map);
 }
 
@@ -106,20 +189,15 @@ int		main(int ac, char **av)
 	t_map	*map;
 
 	fd = 0;
-	if (ac == 2)
-	{
-		if (!(mlx = (t_mlx*)malloc(sizeof(t_mlx))))
-			error("ERROR: malloc error");
-		fd = open(av[1], O_RDONLY);
-		if (fd < 0)
-			error("ERROR: ivalid input file!");
-		map = validate(av, fd);
-		mlx->map = map;
-		//printf("bad value = %f\n", map->points[1][4].x);
-		ft_draw(mlx);
-	}
-	else
-		error("usage: ./fdf [map], could be one file for reading");
-	free(map);
-	free(mlx);
+	if (ac != 2)
+		error("usage: ./fdf [map], should be one file for reading");
+	if (!(mlx = (t_mlx*)malloc(sizeof(t_mlx))))
+		error("ERROR: malloc error");
+	fd = open(av[1], O_RDONLY);
+	if (fd < 0)
+		error("ERROR: ivalid input file!");
+	map = validate(av, fd);
+	mlx = mlx_make(av[1], map);	
+	ft_draw(mlx);
+	mlx_loop(mlx->mlx_p);
 }

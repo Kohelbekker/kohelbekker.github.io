@@ -11,6 +11,18 @@
 // 	int		endian;
 // }				t_env;
 
+// int		hook_keydown(int key, t_mlx *mlx)
+// {
+// 	(void)mlx;
+// 	if (key == 53)
+// 	{
+// 		mlx_destroy_image(mlx->mlx_p, mlx->img);
+// 		mlx_destroy_window(mlx->mlx_p, mlx->win_p);
+// 		exit(EXIT_SUCCESS);
+// 	}
+// 	return (0);
+// }
+
 void    my_pixel_put_to_image(unsigned long img_color, char *data, int sizeline, int bpp, int x, int y)
 {
 	int i;
@@ -29,7 +41,6 @@ void    my_pixel_put_to_image(unsigned long img_color, char *data, int sizeline,
 	color1 = (img_color & 0xFF00000) >> 24;
 	color2 = (img_color & 0xFF00000) >> 16;
 	color3 = (img_color & 0xFF00000) >> 16;
-	
 	/*if (j < 10)
 	{
 		//fprintf(stdout,"color=%d\ncolor2=%d\ncolor3=%d\n", (int)color1, (int)color2, (int)color3);
@@ -42,39 +53,27 @@ void    my_pixel_put_to_image(unsigned long img_color, char *data, int sizeline,
 	data[y * sizeline + x * bpp / 8 + 2] = color3;
 }
 
-// int		hook_keydown(int key, void *win_ptr)
-// {
-// 	if (key == 53)
-// 		exit(EXIT_SUCCESS);
-// 	return (0);
-// }
-
-
 
 int		ft_draw(t_mlx *mlx)
 {
+	t_points a;
 	int x = 0;
 	int y = 0;
-	mlx->mlx_p = mlx_init();
-	mlx->img = mlx_new_image(mlx->mlx_p, 1100, 1100);
-	mlx->data = mlx_get_data_addr(mlx->img, &mlx->bpp, &mlx->sline, &mlx->endian);
 	mlx->img_color = mlx_get_color_value(mlx->mlx_p, 0xc0dde8);
-	printf("height = %d, width = %d", mlx->map->height, mlx->map->width);
+	printf("img_color = %d", mlx->img_color);
 	while (y < mlx->map->height)
 		{
 			while (x < mlx->map->width)
 			{
-				my_pixel_put_to_image(mlx->img_color, mlx->data, mlx->sline, mlx->bpp, mlx->map->points[y][x].x, mlx->map->points[y][x].y);
-	            printf("x=%f\n", mlx->map->points[y][x].x);
+				a = center(mlx->map->points[y][x], mlx); 
+				my_pixel_put_to_image(mlx->img_color, mlx->data, mlx->sline, mlx->bpp, a.x, a.y);
 				x++;
 			}
 			x = 0;
 			y++;
-			printf("Y!");
 		}
-	mlx->win_p = mlx_new_window(mlx->mlx_p, 1200,1150, "Drew" );
-	mlx_put_image_to_window(mlx->mlx_p, mlx->win_p, mlx->img, 100, 100);
-	//mlx_key_hook(mwin_p, hook_keydown, (void *)0);
+	mlx_put_image_to_window(mlx->mlx_p, mlx->win_p, mlx->img, 5, 5);
+	mlx_key_hook(mlx->win_p, hook_keydown, mlx);
 	mlx_loop(mlx->mlx_p);
 	return(0);
 }
