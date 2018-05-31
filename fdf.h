@@ -15,9 +15,9 @@
 
 typedef struct s_points
 {
-	double	x;
-	double	y;
-	double	z;
+	float	x;
+	float	y;
+	float	z;
 	int		color;
 }				t_points;
 
@@ -56,7 +56,7 @@ typedef struct s_mlx
 	int			err2;
  }				t_brez;
 
-////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////
 // typedef struct		s_line
 // {
 // 	t_vector	start;
@@ -71,7 +71,7 @@ typedef struct s_mlx
 
 
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////
 
 int				error(char *str);
 t_points		rotate(t_points p);
@@ -86,7 +86,7 @@ t_mlx			*clean_mlx(t_mlx *mlx);
 t_points		center(t_points a, t_mlx *mlx);
 t_points		scale_mat(t_points p, t_mlx *mlx);
 int				lines_nb(char *av, t_map **map, int lines);
-void			points(t_points a1, t_points a2, t_mlx mlx);
+void			points(t_points a1, t_points a2, t_mlx *mlx);
 
 
 // DELETE!!!!!!!!!

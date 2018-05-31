@@ -44,8 +44,8 @@ t_points	angle_mat(t_points a)
 	z = a.z;
 	y = a.y;
 	v.x = x;
-	v.y = cos(0.7854) * y - sin(0.7854) * z;
-	v.z = -sin(0.7854) * y + cos(0.7854) * z;
+	v.y = cos(0.5) * y - sin(0.5) * z;
+	v.z = -sin(0.5) * y + cos(0.5) * z;
 	v.color = a.color;
 	return (v);
 }
@@ -55,11 +55,14 @@ t_points	center(t_points a, t_mlx *mlx)
 {
 	a.x -= ((mlx->map->width - 1) / 2.0) * DIST;
 	a.y -= ((mlx->map->height - 1) / 2.0) * DIST;
-	a.z -= ((mlx->map->z_max + mlx->map->z_min) / 2.0f) * 30;
+	a.z -= (double)(mlx->map->z_max + mlx->map->z_min) / 2.0;
 	a = scale_mat(a, mlx); 
 	a.x += W_WID / 2;
 	a.y += W_HGHT / 2;
 	a = angle_mat(a);
+	a.x = (int)a.x;
+	a.y = (int)a.y;
+	a.z = (int)a.z;
 	return (a);               
 }
 
@@ -199,5 +202,6 @@ int		main(int ac, char **av)
 	map = validate(av, fd);
 	mlx = mlx_make(av[1], map);	
 	ft_draw(mlx);
+	mlx_key_hook(mlx->win_p, hook_keydown, mlx);
 	mlx_loop(mlx->mlx_p);
 }
