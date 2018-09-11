@@ -1,0 +1,2 @@
+docker inspect --format '{{ .NetworkSettings.IPAddress }}' overlord
+#https://docs.docker.com/engine/reference/commandline/inspect/

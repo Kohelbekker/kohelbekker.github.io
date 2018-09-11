@@ -1,0 +1,2 @@
+networksetup -getmacaddress en0
+#networksetup -listallhardwareports | grep "Ethernet Address" | head -1

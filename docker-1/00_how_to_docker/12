@@ -1,0 +1,4 @@
+docker run -d --restart=on-failure --name spawning-pool -v hatchery:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=Kerrigan -e MYSQL_DATABASE=zerglings mysql:5.7
+# -e -- environment variables
+# sql volume: https://stackoverflow.com/questions/39175194/docker-compose-persistent-data-mysql
+# SQL env: https://docs.docker.com/samples/library/mysql/#mysql_database

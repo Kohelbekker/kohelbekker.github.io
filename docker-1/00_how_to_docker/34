@@ -1,0 +1,2 @@
+docker-machine rm Aiur -y
+#docker-machine ls

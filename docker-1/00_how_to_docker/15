@@ -1,0 +1,2 @@
+docker run -d -p 8081:80 --name roach-warden --link spawning-pool:db  phpmyadmin/phpmyadmin
+# about alias: https://blog.docker.com/2013/10/docker-0-6-5-links-container-naming-advanced-port-redirects-host-integration/

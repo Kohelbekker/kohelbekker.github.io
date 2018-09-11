@@ -1,0 +1,6 @@
+sudo systemctl status ssh
+
+#apt-get install opens-server
+#systemctl start ssh.service
+#systemctl enable ssh.service
+#http://www.configserverfirewall.com/debian-linux/install-debian-ssh-server-openssh/

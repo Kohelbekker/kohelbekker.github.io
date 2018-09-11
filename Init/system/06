@@ -1,0 +1,3 @@
+sudo service ssh restart
+
+#http://www.configserverfirewall.com/debian-linux/install-debian-ssh-server-openssh/

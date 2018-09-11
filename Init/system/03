@@ -1,0 +1,4 @@
+/etc/hostname
+
+# /etc/hosts
+# sudo /usr/sbin/invoke-rc.d hostname.sh start

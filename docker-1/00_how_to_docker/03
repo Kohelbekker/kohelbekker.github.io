@@ -1,0 +1,4 @@
+eval $(docker-machine env Char)
+
+#docker-machine ls
+#eval $(docker-machine env -u)

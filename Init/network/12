@@ -1,0 +1,2 @@
+ping -c5 10.51.1.253
+#https://www.computerhope.com/unix/uping.htm

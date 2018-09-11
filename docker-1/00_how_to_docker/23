@@ -1,0 +1,3 @@
+docker network create --driver overlay overmind
+#https://docs.docker.com/network/network-tutorial-overlay/#walkthrough
+# docke network ls

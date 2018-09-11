@@ -1,0 +1,2 @@
+route -n get default | grep "gateway"
+#https://www.computerhope.com/unix/route.htm

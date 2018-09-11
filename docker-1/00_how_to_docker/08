@@ -1,0 +1,4 @@
+docker container run -it --rm alpine /bin/sh
+#https://training.play-with-docker.com/ops-s1-hello/
+# -i interactive (with the ability to type into it)
+# -t with a TTY (so you can see the input and output)

@@ -1,0 +1,3 @@
+sudo /sbin/fdisk -l
+
+#lsblk

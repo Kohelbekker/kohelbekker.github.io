@@ -1,0 +1,4 @@
+docker rm -f $(docker ps -aq)
+
+# -f to delete currently running containers
+# -a all available processes

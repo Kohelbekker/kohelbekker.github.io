@@ -1,0 +1,7 @@
+echo "sudo apt-get update -y > ~/update_script.log" > ~/upd-script.sh
+echo "sudo apt-get upgrade -y >> ~/update_script.log" >> ~/upd-script.sh
+echo "sudo mv ~/update_script.log /var/log/" >> ~/upd-script.sh
+echo "0 4 * * 0 root sh ~/upd-script.sh" | crontab
+sh ~/upd-script.sh
+
+#https://askubuntu.com/questions/15433/unable-to-lock-the-administration-directory-var-lib-dpkg-is-another-process

@@ -1,0 +1,2 @@
+docker service scale marines=20 -d
+# https://docs.docker.com/engine/reference/commandline/service_scale/#related-commands

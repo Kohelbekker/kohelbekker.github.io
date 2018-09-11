@@ -1,0 +1,12 @@
+if [ ! -f ~/log.md5 ]; then
+	md5sum /etc/crontab > ~/log.md5
+fi
+if  ! md5sum -c ~/log.md5
+then
+	echo "File has been changed" | mail -s "Changes" root
+	md5sum /etc/crontab > ~/log.md5 
+fi
+
+#echo "0 0 * * 0-6 root sh ~/Init/scripts/04" | crontab
+#cat /etc/aliases
+# cat /var/mail/user from root
