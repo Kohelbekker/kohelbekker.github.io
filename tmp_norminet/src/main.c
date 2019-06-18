@@ -17,7 +17,7 @@ void		add_resources(t_box *box)
 	if (SDL_Init(SDL_INIT_EVERYTHING) == -1)
 		fatal_error(1, box);
 	if ((box->wind = SDL_CreateWindow("Doom Nukem", SDL_WINDOWPOS_CENTERED,
-			SDL_WINDOWPOS_CENTERED, WIND_W, WIND_H, 0)) == NULL)
+		SDL_WINDOWPOS_CENTERED, WIND_W, WIND_H, 0)) == NULL)
 		fatal_error(2, box);
 	if ((box->rend = SDL_CreateRenderer(box->wind, -1,
 		SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC)) == NULL)

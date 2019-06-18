@@ -1,6 +1,6 @@
 #include "wolf3d.h"
 
-int		check_map(t_box *box)
+int			check_map(t_box *box)
 {
 	char	**map;
 	char	*line;
@@ -29,10 +29,10 @@ int		check_map(t_box *box)
 	return (0);
 }
 
-int		add_to_map(char *str)
+int			add_to_map(char *str)
 {
-	int i;
-	int res;
+	int		i;
+	int		res;
 
 	i = 1;
 	res = str[0] - 48;
@@ -47,14 +47,16 @@ int		add_to_map(char *str)
 	}
 	return (res);
 }
-int		check_map_par(t_box *box, char *str, int i, int n)
+
+int			check_map_par(t_box *box, char *str, int i, int n)
 {
-	int block;
+	int		block;
 
 	block = add_to_map(str);
-	if ((box->uselessy == 0 || box->uselessy == box->mapy) && (block == 0 || block == 999)) // перша та остання строка карти
+	if ((box->uselessy == 0 || box->uselessy == box->mapy) &&
+		(block == 0 || block == 999))
 		return (-1);
-	if ((block == 0 || block == 999) && (i == 0 || i == box->mapx)) // края карти
+	if ((block == 0 || block == 999) && (i == 0 || i == box->mapx))
 		return (-1);
 	if (block == 999)
 	{
@@ -70,24 +72,5 @@ int		check_map_par(t_box *box, char *str, int i, int n)
 		box->all_map[box->uselessy][i] = block;
 	if (block >= 2 && block <= 9)
 		add_sprite(box, block, i, box->uselessy);
-	// else
-	// {
-	// 	if (str[0] == '9')
-	// 	{
-	// 		box->cam.position.x = i + 0.5;
-	// 		box->cam.position.y = box->uselessy + 0.5;
-	// 		box->all_map[box->uselessy][i] = 0;
-	// 		n *= 2;
-	// 	}
-	// 	else if (str[0] == '2' || str[0] == '3' || str[0] == '4' || str[0] == '5' || str[0] == '6') // Видалити str[0] == '1'
-	// 	{
-	// 		if (str[0] == '4')
-	// 			box->all_map[box->uselessy][i] = 0;
-	// 		else
-	// 			box->all_map[box->uselessy][i] = add_to_map(str)
-	// 	}
-	// 	else
-	// 		box->all_map[box->uselessy][i] = add_to_map(str);
-	// }
 	return (n);
 }

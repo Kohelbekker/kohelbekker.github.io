@@ -50,7 +50,7 @@ void	check_keys(t_box *box)
 	{
 		box->sitd = 1;
 		box->go.spd = 0.035;
-		return (0);
+		return ;
 	}
 	else if (!(box->keys[SDL_SCANCODE_Q]) &&
 		!(box->keys[SDL_SCANCODE_LSHIFT]))

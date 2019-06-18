@@ -1,6 +1,6 @@
 #include "wolf3d.h"
 
-SDL_Surface		*load_texture(char *path, t_box *wolf)
+SDL_Surface			*load_texture(char *path, t_box *wolf)
 {
 	SDL_Surface		*tmp;
 	SDL_Surface		*image;
@@ -20,10 +20,10 @@ SDL_Surface		*load_texture(char *path, t_box *wolf)
 	return (image);
 }
 
-SDL_Surface		*ft_check_png(t_box *box, char *text)
+SDL_Surface			*ft_check_png(t_box *box, char *text)
 {
-	SDL_Surface *tmp;
-	SDL_Surface *png;
+	SDL_Surface		*tmp;
+	SDL_Surface		*png;
 
 	if ((tmp = IMG_Load(text)) == NULL)
  	{
@@ -38,11 +38,11 @@ SDL_Surface		*ft_check_png(t_box *box, char *text)
  	return(png);
 }
 
-SDL_Texture		*menu_png(char *text, t_box *box)
+SDL_Texture			*menu_png(char *text, t_box *box)
 {
-	SDL_Surface *tmp;
-	SDL_Surface *surf;
-	SDL_Texture *txtr;
+	SDL_Surface		*tmp;
+	SDL_Surface		*surf;
+	SDL_Texture		*txtr;
 
 	if ( (tmp = IMG_Load(text)) == NULL)
  	{
@@ -74,6 +74,22 @@ void				load_menu_txtrs(t_box *box)
 	box->menu_txtrs[9] = menu_png("txtrs/sys_txerr.png", box);
 }
 
+void				sprites_loader(t_box *box)
+{
+	box->sprites.tex_sprite[0] = IMG_Load("txtrs/acid_barel.png");
+	box->sprites.tex_sprite[1] = IMG_Load("txtrs/acid.png");
+	box->sprites.tex_sprite[2] = IMG_Load("txtrs/lamp.png");
+	box->sprites.tex_sprite[3] = IMG_Load("txtrs/table-chairs.png");
+	box->sprites.tex_sprite[4] = IMG_Load("txtrs/keys.png");
+	box->sprites.tex_sprite[5] = IMG_Load("txtrs/dog1.png");
+	box->sprites.tex_sprite[6] = IMG_Load("txtrs/dog2.png");
+	box->sprites.tex_sprite[7] = IMG_Load("txtrs/dog3.png");
+	box->sprites.tex_sprite[8] = IMG_Load("txtrs/dog4.png");
+	box->sprites.tex_sprite[9] = IMG_Load("txtrs/health.png");
+	box->sprites.tex_sprite[10] = IMG_Load("txtrs/key_in_bug.png");
+	box->sprites.tex_sprite[11] = IMG_Load("txtrs/end_level.png");
+}
+
 void				load_wall_textures(t_box *box)
 {
 	box->texture = menu_png("txtrs/game_over.png", box);
@@ -91,17 +107,6 @@ void				load_wall_textures(t_box *box)
 	box->txtrs[10] = load_texture("txtrs/night_r.bmp", box);
 	box->txtrs[11] = load_texture("txtrs/fl.bmp", box);
 	box->txtrs[12] = load_texture("txtrs/ceiling_01.bmp", box);
-	box->sprites.tex_sprite[0] = IMG_Load("txtrs/acid_barel.png");
-	box->sprites.tex_sprite[1] = IMG_Load("txtrs/acid.png");
-	box->sprites.tex_sprite[2] = IMG_Load("txtrs/lamp.png");
-	box->sprites.tex_sprite[3] = IMG_Load("txtrs/table-chairs.png");
-	box->sprites.tex_sprite[4] = IMG_Load("txtrs/keys.png");
-	box->sprites.tex_sprite[5] = IMG_Load("txtrs/dog1.png");
-	box->sprites.tex_sprite[6] = IMG_Load("txtrs/dog2.png");
-	box->sprites.tex_sprite[7] = IMG_Load("txtrs/dog3.png");
-	box->sprites.tex_sprite[8] = IMG_Load("txtrs/dog4.png");
-	box->sprites.tex_sprite[9] = IMG_Load("txtrs/health.png");
-	box->sprites.tex_sprite[10] = IMG_Load("txtrs/key_in_bug.png");
-	box->sprites.tex_sprite[11] = IMG_Load("txtrs/end_level.png");
+	sprites_loader(box);
 	ft_load_hud_tex(box);
 }

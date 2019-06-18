@@ -378,7 +378,7 @@ void				show_map_name(t_box *box, int c, int z);
 void				ifc_map_name(t_box *box, int c, int z);
 void				ifp_map_name(t_box *box, int c, int z);
 void				ifcnp_map_name(t_box *box, int c, int z);
-void 				load_maps(t_maps *m_l);
+void 				load_maps(t_maps *m_l, int i);
 int					ft_weapon(t_box *box);
 ///
 /* sprite */

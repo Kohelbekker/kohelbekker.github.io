@@ -1,9 +1,9 @@
 #include "wolf3d.h"
 
-int	ft_chek_dfile(char *str, char *f)
+int				ft_chek_dfile(char *str, char *f)
 {
-	int i;
-	int c;
+	int			i;
+	int			c;
 
 	i = 0;
 	c = 0;
@@ -19,11 +19,11 @@ int	ft_chek_dfile(char *str, char *f)
 	return (1);
 }
 
-char *add_map_name(char *str)
+char			*add_map_name(char *str)
 {
-	char *name;
-	int i;
-	int j;
+	char		*name;
+	int			i;
+	int			j;
 
 	i = ft_strlen(str) - 4;
 	if (i > 7)
@@ -46,15 +46,30 @@ char *add_map_name(char *str)
 	return (name);
 }
 
-void load_maps(t_maps *m_l)
+int				check_input_map(struct	dirent *dp, t_maps *m_l, int j)
 {
-	int j;
-	int i;
-	int fddir;
-	DIR *dfd;
-	struct dirent *dp;
+	int			i;
 
-	i = 0;
+	if (ft_chek_dfile(dp->d_name, ".map") == 1)
+	{
+		i = ft_strlen(dp->d_name);
+		m_l->map_name[j] = add_map_name(dp->d_name);
+		i += ft_strlen("maps/");
+		m_l->map_path[j] = (char *)malloc(sizeof(char) * i);
+		m_l->map_path[j] = ft_strcat(m_l->map_path[j],"maps/");
+		m_l->map_path[j] = ft_strcat(m_l->map_path[j], dp->d_name);
+		j++;
+	}
+	return (j);
+}
+
+void			load_maps(t_maps *m_l, int i)
+{
+	int			j;
+	int			fddir;
+	DIR			*dfd;
+	struct		dirent *dp;
+
 	j = 0;
 	fddir = open("maps", O_DIRECTORY);
 	if (fddir == -1)
@@ -69,37 +84,27 @@ void load_maps(t_maps *m_l)
 	rewinddir(dfd);
 	m_l->map_path = (char **)malloc(sizeof(char *) * (i + 1));
 	m_l->map_name = (char **)malloc(sizeof(char *) * (i + 1));
-	i = 0;
 	while((dp = readdir(dfd)) != NULL)
-	{
-		if (ft_chek_dfile(dp->d_name, ".map") == 1)
-		{
-			i = ft_strlen(dp->d_name);
-			m_l->map_name[j] = add_map_name(dp->d_name);
-			i += ft_strlen("maps/");
-			m_l->map_path[j] = (char *)malloc(sizeof(char) * i);
-			m_l->map_path[j] = ft_strcat(m_l->map_path[j],"maps/");
-			m_l->map_path[j] = ft_strcat(m_l->map_path[j], dp->d_name);
-			j++;
-		}
-		i = 0;
-	}
+		j = check_input_map(dp, m_l, j);
 	closedir(dfd);
 	close(fddir);
 }
 
-void	show_map_name(t_box *box, int c, int z)
+void			show_map_name(t_box *box, int c, int z)
 {
-	int ch = 1;
-	int y = 304;
-	SDL_Texture  *pic;
+	int			ch;
+	int			y;
+	SDL_Texture	*pic;
+
+	ch = 1;
+	y = 304;
 
 	while ((ch + box->map_list.c_list - 1) <= box->map_list.max_maps && ch <= 6)
 	{
 		if(z != ch && c != ch)
 		{
-			pic = renderText_blue(box->map_list.map_name[ch + box->map_list.c_list - 1],
-				"ttf/mainfont.ttf", 35, box->rend);
+			pic = renderText_blue(box->map_list.map_name[ch +
+				box->map_list.c_list - 1], "ttf/mainfont.ttf", 35, box->rend);
 			ApplySurface(944, y, 0, 0, pic, box->rend);
 			y += 54;
 			ch++;
@@ -116,18 +121,20 @@ void	show_map_name(t_box *box, int c, int z)
 		box->map_list.l_f = 0;
 }
 
-void	ifc_map_name(t_box *box, int c, int z)
+void			ifc_map_name(t_box *box, int c, int z)
 {
-	int ch = 1;
-	int y = 304;
-	SDL_Texture  *pic;
+	int			ch;
+	int			y;
+	SDL_Texture	*pic;
 
+	ch = 1;
+	y = 304;
 	while ((ch + box->map_list.c_list - 1) <= box->map_list.max_maps && ch <= 6)
 	{
 		if(z == ch && c != ch)
 		{
-			pic = renderText_red(box->map_list.map_name[ch + box->map_list.c_list - 1],
-				"ttf/mainfont.ttf", 35, box->rend);
+			pic = renderText_red(box->map_list.map_name[ch +
+				box->map_list.c_list - 1], "ttf/mainfont.ttf", 35, box->rend);
 			ApplySurface(944, y, 0, 0, pic, box->rend);
 			y += 54;
 			box->start = ch + box->map_list.c_list - 1;
@@ -141,18 +148,20 @@ void	ifc_map_name(t_box *box, int c, int z)
 	}
 }
 
-void	ifp_map_name(t_box *box, int c, int z)
+void			ifp_map_name(t_box *box, int c, int z)
 {
-	int ch = 1;
-	int y = 304;
-	SDL_Texture  *pic;
+	int			ch;
+	int			y;
+	SDL_Texture	*pic;
 
+	ch = 1;
+	y = 304;
 	while ((ch + box->map_list.c_list - 1) <= box->map_list.max_maps && ch <= 6)
 	{
 		if(z != ch && c == ch)
 		{
-			pic = renderText_purp(box->map_list.map_name[ch + box->map_list.c_list - 1],
-				"ttf/mainfont.ttf", 35, box->rend);
+			pic = renderText_purp(box->map_list.map_name[ch +
+				box->map_list.c_list - 1], "ttf/mainfont.ttf", 35, box->rend);
 			ApplySurface(944, y, 0, 0, pic, box->rend);
 			y += 54;
 			ch++;
@@ -165,18 +174,20 @@ void	ifp_map_name(t_box *box, int c, int z)
 	}
 }
 
-void	ifcnp_map_name(t_box *box, int c, int z)
+void			ifcnp_map_name(t_box *box, int c, int z)
 {
-	int ch = 1;
-	int y = 304;
-	SDL_Texture  *pic;
+	int			ch;
+	int			y;
+	SDL_Texture	*pic;
 
+	ch = 1;
+	y = 304;
 	while ((ch + box->map_list.c_list - 1) <= box->map_list.max_maps && ch <= 6)
 	{
 		if(z == ch && c == ch)
 		{
-			pic = renderText_red(box->map_list.map_name[ch + box->map_list.c_list - 1],
-				"ttf/mainfont.ttf", 35, box->rend);
+			pic = renderText_red(box->map_list.map_name[ch +
+				box->map_list.c_list - 1], "ttf/mainfont.ttf", 35, box->rend);
 			ApplySurface(944, y, 0, 0, pic, box->rend);
 			y += 54;
 			box->start = ch + box->map_list.c_list - 1;
@@ -190,7 +201,7 @@ void	ifcnp_map_name(t_box *box, int c, int z)
 	}
 }
 
-void if_b_or_n(t_box *box, int x, int y, int *z, int *c)
+void			if_b_or_n(t_box *box, int x, int y, int *z, int *c)
 {
 	if ((x > 945 && x < 1075) && (y > 640 && y < 680))
 	{

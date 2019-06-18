@@ -167,7 +167,7 @@ void				start_game(t_box *box)
 
 	ft_init_music(box);
 	load_menu_txtrs(box);
-	load_maps(&box->map_list);
+	load_maps(&box->map_list, 0);
 	while (1)
 	{
 		while (SDL_PollEvent(&event))
